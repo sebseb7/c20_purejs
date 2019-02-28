@@ -1,19 +1,24 @@
-var c29 = require('./c29.js');
-var verify = c29.cwrap('c29_verify', 'number', ['array','number','array']);
+const request = require('request');
+var c29s = require('./c29s.js');
+var verify = c29s.cwrap('c29s_verify', 'number', ['array','number','array']);
 
-var edges = [
-	3630647,22264576,26481684,36143584,40488771,56761690,75686903,91358206,105443927,133707559,
-	142538312,144073846,154225649,166535986,185598250,215815903,224309845,224640377,224804206,262593054,
-	281141248,284953652,293013797,299650808,358596672,370503515,392338062,404082256,413152628,414566961,
-	424678135,426480708,437276687,452007991,463625388,469139392,473621789,487064831,498476194,523712905,526070495,527478662
-];
 
-var cycle = Buffer.alloc(42*4);
+request.get('https://swap.coinscope.cc/api/rawblock/599000', (error, response, body) => {
+	var data = JSON.parse(body).data;
+	
+	verify(Buffer.from([0,2,0,0,0,0,0,0,0,12]),10,cycle);
 
+	console.log(data.cycle);
+});
+
+
+/*
+var cycle = Buffer.alloc(32*4);
 for(var i in edges)
 {
 	cycle.writeInt32LE(edges[i], i*4);
 }
 
-verify(Buffer.from([0,2,0,0,0,0,0,0,0,12]),10,cycle);
-
+for(var i=0 ; i < 10000;i++)
+	verify(Buffer.from([0,2,0,0,0,0,0,0,0,12]),10,cycle);
+*/
